@@ -34,7 +34,7 @@ const CheckoutPage = ({ cart, setCart, user }) => {
       };
 
       const { data } = await axios.post(
-        'http://localhost:5000/api/orders',
+        '/api/orders',
         {
           orderItems: cart.map(item => ({
             name: item.name,

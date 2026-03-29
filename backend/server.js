@@ -21,13 +21,11 @@ app.use('/api/products', productRoutes);
 app.use('/api/users', authRoutes);
 app.use('/api/orders', orderRoutes);
 
-// Serve Static Assets in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/dist')));
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../frontend', 'dist', 'index.html'));
-  });
-}
+// Serve Static Assets
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../frontend', 'dist', 'index.html'));
+});
 
 // Database Connection
 const PORT = process.env.PORT || 5000;
