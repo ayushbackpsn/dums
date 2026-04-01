@@ -35,6 +35,7 @@ const ProfilePage = ({ user, setUser, logout }) => {
         };
         
         const { data } = await axios.get('/api/users/profile', config);
+        console.log('Profile data received:', data); // Debug log
         setProfileData({
           name: data.name || '',
           email: data.email || '',
@@ -46,6 +47,7 @@ const ProfilePage = ({ user, setUser, logout }) => {
         });
         setLoading(false);
       } catch (err) {
+        console.error('Profile fetch error:', err); // Debug log
         setError(err.response?.data?.message || 'Failed to load profile');
         setLoading(false);
       }

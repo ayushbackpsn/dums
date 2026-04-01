@@ -11,15 +11,18 @@ const OrderConfirmationPage = () => {
   useEffect(() => {
     // Get order data from location state or localStorage
     if (location.state?.orderData) {
+      console.log('Order data from state:', location.state.orderData); // Debug log
       setOrderData(location.state.orderData);
       setLoading(false);
     } else {
       // Try to get from localStorage as fallback
       const savedOrder = localStorage.getItem('lastOrder');
       if (savedOrder) {
+        console.log('Order data from localStorage:', JSON.parse(savedOrder)); // Debug log
         setOrderData(JSON.parse(savedOrder));
         setLoading(false);
       } else {
+        console.log('No order data found'); // Debug log
         setLoading(false);
       }
     }
@@ -106,6 +109,27 @@ Thank you for your order!
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
         <div className="animate-fade-in" style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>
           Loading order confirmation...
+        </div>
+      </div>
+    );
+  }
+
+  if (!orderData) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+        <div className="glass-card" style={{ padding: '2rem', textAlign: 'center', maxWidth: '500px' }}>
+          <h2 style={{ color: 'var(--error)', marginBottom: '1rem' }}>Order Not Found</h2>
+          <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>
+            We couldn't find your order information. This might be because you navigated here directly or the session expired.
+          </p>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+            <button className="btn btn-primary" onClick={() => navigate('/')}>
+              Continue Shopping
+            </button>
+            <button className="btn btn-secondary" onClick={() => navigate('/orders')}>
+              View Orders
+            </button>
+          </div>
         </div>
       </div>
     );

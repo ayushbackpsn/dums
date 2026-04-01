@@ -57,18 +57,33 @@ const CheckoutPage = ({ cart, setCart, user }) => {
       setTimeout(() => {
         setIsProcessing(false);
         setIsSuccess(true);
+        
+        // Store order data in localStorage before clearing cart
+        const orderData = {
+          _id: data._id,
+          orderItems: cart.map(item => ({
+            name: item.name,
+            qty: item.quantity,
+            image: item.image,
+            price: item.price,
+            product: item._id
+          })),
+          shippingAddress: { address, city, postalCode, country },
+          paymentMethod,
+          itemsPrice,
+          shippingPrice,
+          taxPrice,
+          totalPrice,
+          createdAt: new Date().toISOString()
+        };
+        
+        localStorage.setItem('lastOrder', JSON.stringify(orderData));
         setCart([]);
         localStorage.removeItem('cart');
         
         // Navigate to order confirmation page with order data
         navigate('/order-confirmation', { 
-          state: { 
-            orderData: {
-              _id: data._id,
-              ...data,
-              createdAt: new Date().toISOString()
-            }
-          }
+          state: { orderData }
         });
       }, 2000);
     } catch (err) {
