@@ -8,6 +8,10 @@ const HomePage = ({ addToCart, searchTerm }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [category, setCategory] = useState('All');
+  const [sortBy, setSortBy] = useState('name');
+  const [sortOrder, setSortOrder] = useState('asc');
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -29,7 +33,29 @@ const HomePage = ({ addToCart, searchTerm }) => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           product.brand.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = category === 'All' || product.category === category;
-    return matchesSearch && matchesCategory;
+    const matchesPrice = product.price >= priceRange.min && product.price <= priceRange.max;
+    return matchesSearch && matchesCategory && matchesPrice;
+  });
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    let comparison = 0;
+    switch (sortBy) {
+      case 'name':
+        comparison = a.name.localeCompare(b.name);
+        break;
+      case 'price':
+        comparison = a.price - b.price;
+        break;
+      case 'brand':
+        comparison = a.brand.localeCompare(b.brand);
+        break;
+      case 'category':
+        comparison = a.category.localeCompare(b.category);
+        break;
+      default:
+        comparison = 0;
+    }
+    return sortOrder === 'asc' ? comparison : -comparison;
   });
 
   if (loading) return (
@@ -78,20 +104,110 @@ const HomePage = ({ addToCart, searchTerm }) => {
           ))}
         </div>
         <div style={{ display: 'flex', gap: '1rem' }}>
-          <button className="btn btn-secondary"><SlidersHorizontal size={18} /> Filters</button>
-          <button className="btn btn-secondary"><ArrowUpDown size={18} /> Sort</button>
+          <button 
+            className="btn btn-secondary" 
+            onClick={() => setShowFilters(!showFilters)}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+          >
+            <SlidersHorizontal size={18} /> Filters
+          </button>
+          <div style={{ position: 'relative' }}>
+            <button 
+              className="btn btn-secondary"
+              onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            >
+              <ArrowUpDown size={18} /> Sort
+            </button>
+            <select 
+              value={sortBy} 
+              onChange={(e) => setSortBy(e.target.value)}
+              style={{
+                position: 'absolute',
+                top: '100%',
+                right: '0',
+                marginTop: '0.5rem',
+                padding: '0.5rem',
+                border: '1px solid var(--border)',
+                borderRadius: '8px',
+                background: 'var(--card-bg)',
+                color: 'var(--text)',
+                fontSize: '0.9rem',
+                cursor: 'pointer'
+              }}
+            >
+              <option value="name">Name</option>
+              <option value="price">Price</option>
+              <option value="brand">Brand</option>
+              <option value="category">Category</option>
+            </select>
+          </div>
         </div>
       </div>
 
+      {/* Advanced Filters Panel */}
+      {showFilters && (
+        <div className="glass-card" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
+          <h3 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '1rem' }}>Advanced Filters</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>
+                Price Range: ${priceRange.min} - ${priceRange.max}
+              </label>
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <input
+                  type="range"
+                  min="0"
+                  max="1000"
+                  value={priceRange.max}
+                  onChange={(e) => setPriceRange(prev => ({ ...prev, max: parseInt(e.target.value) }))}
+                  style={{ flex: 1 }}
+                />
+                <input
+                  type="number"
+                  min="0"
+                  max="1000"
+                  value={priceRange.max}
+                  onChange={(e) => setPriceRange(prev => ({ ...prev, max: parseInt(e.target.value) || 0 }))}
+                  style={{ 
+                    width: '80px', 
+                    padding: '0.5rem', 
+                    border: '1px solid var(--border)', 
+                    borderRadius: '8px',
+                    background: 'var(--card-bg)',
+                    color: 'var(--text)',
+                    fontSize: '0.9rem'
+                  }}
+                />
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '1rem' }}>
+              <button 
+                className="btn btn-secondary"
+                onClick={() => {
+                  setPriceRange({ min: 0, max: 1000 });
+                  setCategory('All');
+                  setSortBy('name');
+                  setSortOrder('asc');
+                }}
+              >
+                Reset Filters
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Product Grid */}
-      {filteredProducts.length === 0 ? (
+      {sortedProducts.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '5rem', color: 'var(--text-muted)' }}>
           <PackageSearch size={64} style={{ marginBottom: '1rem', opacity: 0.5 }} />
           <h3>No shoes found matching your search.</h3>
+          <p style={{ marginTop: '1rem' }}>Try adjusting your filters or search terms</p>
         </div>
       ) : (
         <div className="product-grid">
-          {filteredProducts.map(product => (
+          {sortedProducts.map(product => (
             <ProductCard key={product._id} product={product} addToCart={addToCart} />
           ))}
         </div>

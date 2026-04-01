@@ -46,7 +46,12 @@ const CartPage = ({ cart, removeFromCart, updateQuantity }) => {
                   <h3 style={{ fontSize: '1.25rem', fontWeight: '700' }}>{item.name}</h3>
                   <span style={{ fontSize: '1.25rem', fontWeight: '800' }}>${item.price}</span>
                 </div>
-                <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>{item.category} / {item.brand}</div>
+                <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>{item.category} / {item.brand}</div>
+                {item.selectedSize && (
+                  <div style={{ fontSize: '0.9rem', color: 'var(--primary)', fontWeight: '600', marginBottom: '1rem' }}>
+                    Size: {item.selectedSize}
+                  </div>
+                )}
                 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'var(--card-bg)', padding: '0.5rem', borderRadius: '12px', border: '1px solid var(--border)' }}>

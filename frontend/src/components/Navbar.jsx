@@ -89,7 +89,25 @@ const Navbar = ({ cartCount, searchTerm, setSearchTerm, theme, toggleTheme, user
           <div style={{ borderLeft: '1px solid var(--border)', paddingLeft: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
             {user ? (
               <>
-                <span style={{ fontWeight: '700', fontSize: '0.9rem' }} className="hide-mobile">{(user.name || 'User').split(' ')[0]}</span>
+                <Link 
+                  to="/profile" 
+                  style={{ 
+                    color: 'var(--text)', 
+                    textDecoration: 'none', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '0.5rem', 
+                    fontWeight: '600', 
+                    fontSize: '0.9rem',
+                    padding: '0.4rem 0.8rem',
+                    borderRadius: '8px',
+                    background: 'var(--card-bg)',
+                    border: '1px solid var(--border)'
+                  }}
+                >
+                  <User size={16} />
+                  <span className="hide-mobile">{(user.name || 'User').split(' ')[0]}</span>
+                </Link>
                 <button onClick={logout} className="btn btn-secondary" style={{ padding: '0.4rem', borderRadius: '50%', width: '36px', height: '36px' }}>
                   <LogOut size={18} />
                 </button>

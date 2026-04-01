@@ -2,11 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
+import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import LocationPage from './pages/LocationPage';
 import CheckoutPage from './pages/CheckoutPage';
+import ProfilePage from './pages/ProfilePage';
+import MyOrdersPage from './pages/MyOrdersPage';
+import OrderConfirmationPage from './pages/OrderConfirmationPage';
 
 function App() {
   const [cart, setCart] = useState(() => {
@@ -110,11 +114,15 @@ function App() {
         <main className="container" style={{ paddingTop: '100px', paddingBottom: '40px' }}>
           <Routes>
             <Route path="/" element={<HomePage addToCart={addToCart} searchTerm={searchTerm} />} />
+            <Route path="/product/:id" element={<ProductDetailPage addToCart={addToCart} />} />
             <Route path="/cart" element={<CartPage cart={cart} removeFromCart={removeFromCart} updateQuantity={updateQuantity} />} />
             <Route path="/login" element={!user ? <LoginPage setUser={setUser} /> : <Navigate to="/" />} />
             <Route path="/signup" element={!user ? <SignupPage setUser={setUser} /> : <Navigate to="/" />} />
             <Route path="/location" element={<LocationPage />} />
             <Route path="/checkout" element={user ? <CheckoutPage cart={cart} setCart={setCart} user={user} /> : <Navigate to="/login" />} />
+            <Route path="/profile" element={user ? <ProfilePage user={user} setUser={setUser} logout={logout} /> : <Navigate to="/login" />} />
+            <Route path="/orders" element={user ? <MyOrdersPage user={user} /> : <Navigate to="/login" />} />
+            <Route path="/order-confirmation" element={user ? <OrderConfirmationPage /> : <Navigate to="/login" />} />
           </Routes>
         </main>
       </div>

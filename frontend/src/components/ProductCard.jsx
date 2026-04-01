@@ -1,7 +1,13 @@
 import React from 'react';
 import { ShoppingCart, Star, Heart, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const ProductCard = ({ product, addToCart }) => {
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate(`/product/${product._id}`);
+  };
   const handleAdd = (e) => {
     e.preventDefault();
     console.log('Button clicked for product:', product.name);
@@ -13,7 +19,27 @@ const ProductCard = ({ product, addToCart }) => {
   };
 
   return (
-    <div className="glass-card animate-fade-in" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', position: 'relative' }}>
+    <div 
+      className="glass-card animate-fade-in" 
+      style={{ 
+        padding: '1.5rem', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: '1rem', 
+        position: 'relative',
+        cursor: 'pointer',
+        transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+      }}
+      onClick={handleCardClick}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-4px)';
+        e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = 'none';
+      }}
+    >
       {/* Product Image Stage */}
       <div style={{ position: 'relative', width: '100%', height: '240px', overflow: 'hidden', borderRadius: '16px', background: 'rgba(99, 102, 241, 0.05)' }}>
         <img 
@@ -26,6 +52,10 @@ const ProductCard = ({ product, addToCart }) => {
         />
         <button 
           style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'var(--card-bg)', border: 'none', padding: '0.4rem', borderRadius: '50%', color: 'var(--secondary)', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}
+          onClick={(e) => {
+            e.stopPropagation();
+            // Wishlist functionality can be added here
+          }}
         >
           <Heart size={18} />
         </button>

@@ -59,6 +59,17 @@ const CheckoutPage = ({ cart, setCart, user }) => {
         setIsSuccess(true);
         setCart([]);
         localStorage.removeItem('cart');
+        
+        // Navigate to order confirmation page with order data
+        navigate('/order-confirmation', { 
+          state: { 
+            orderData: {
+              _id: data._id,
+              ...data,
+              createdAt: new Date().toISOString()
+            }
+          }
+        });
       }, 2000);
     } catch (err) {
       setError(err.response?.data?.message || err.message);
